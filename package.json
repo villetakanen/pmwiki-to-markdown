@@ -1,0 +1,22 @@
+{
+	"name": "pmwiki-to-markdown",
+	"version": "0.0.1",
+	"scripts": {
+		"build": "tsc && vite build",
+		"start": "node dist/index.js",
+		"check": "biome check --write"
+	},
+	"bin": {
+		"pmwiki-to-markdown": "dist/index.js"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.9.4",
+		"@types/node": "^22.8.7",
+		"typescript": "^5.6.3",
+		"vite": "^5.4.10"
+	},
+	"dependencies": {
+		"commander": "^12.1.0",
+		"fs": "0.0.1-security"
+	}
+}
