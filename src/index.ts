@@ -1,5 +1,7 @@
 import fs from "fs";
 import { program } from "commander";
+import { version } from "../package.json";
+import { MarkdownPage } from "./MarkdownPage";
 import { convertWikitextToMarkdown } from "./convertWikitextToMarkdown";
 
 // ****************************************************************************
@@ -7,7 +9,7 @@ import { convertWikitextToMarkdown } from "./convertWikitextToMarkdown";
 // ****************************************************************************                                                                   *
 
 program
-	.version("1.0.0")
+	.version(version)
 	.description("Convert pmwiki binary file to Markdown")
 	.requiredOption("-i, --input <file>", "Input pmwiki file or folder")
 	.option("-o, --output <file>", "Output folder, default is current folder")
@@ -39,26 +41,10 @@ function convertPmWikiToMarkdown(
 	}
 }
 
-type MarkdownJSON = {
-	headmatter: {
-		title: string;
-		site: string;
-		updated: string;
-	};
-	content: string;
-};
-function writeMarkdownFile(mdd: MarkdownJSON, outputFilePath: string) {
+function writeMarkdownFile(mdd: MarkdownPage, outputFilePath: string) {
 	try {
-		const data = `---
-title: ${mdd.headmatter.title}
-site: ${mdd.headmatter.site}
-updated: ${mdd.headmatter.updated}
----
-${mdd.content}`;
-
 		// Add the site to the output folder
-		const site = mdd.headmatter.site;
-		const siteFolder = `${outputFilePath}/${site}`;
+		const siteFolder = `${outputFilePath}/${mdd.site}`;
 
 		// Check if the site folder exists, if not create it
 		if (!fs.existsSync(siteFolder)) {
@@ -66,7 +52,7 @@ ${mdd.content}`;
 		}
 
 		// Write the markdown file
-		fs.writeFileSync(`${siteFolder}/${mdd.headmatter.title}.md`, data);
+		fs.writeFileSync(`${siteFolder}/${mdd.title}.md`, mdd.toMarkdown());
 	} catch (err) {
 		console.error("Error writing the file:", err);
 	}
@@ -78,26 +64,19 @@ function convertPmWikiFileToMarkdown(
 ) {
 	try {
 		const data = fs.readFileSync(inputFilePath, "utf8");
-		const mdd: MarkdownJSON = {
-			headmatter: {
-				title: "",
-				site: "",
-				updated: "",
-			},
-			content: "",
-		};
+		const mdd = new MarkdownPage();
 		const lines = data.split("\n");
 		for (const line of lines) {
 			if (line.startsWith("time=")) {
-				mdd.headmatter.updated = line.split("=")[1];
+				mdd.updated = line.split("=")[1];
 			} else if (line.startsWith("name=")) {
 				const name = line.split("=")[1];
 				const parts = name.split(".");
-				mdd.headmatter.title = parts[1];
-				mdd.headmatter.site = parts[0];
+				mdd.title = parts[1];
+				mdd.site = parts[0];
 			} else if (line.startsWith("text=")) {
 				const wikitext = line.split("=")[1];
-				mdd.content = convertWikitextToMarkdown(wikitext);
+				mdd.body = convertWikitextToMarkdown(wikitext);
 			}
 		}
 		writeMarkdownFile(mdd, outputFilePath);
