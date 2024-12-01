@@ -2,7 +2,6 @@ import fs from "fs";
 import { program } from "commander";
 import { version } from "../package.json";
 import { MarkdownPage } from "./MarkdownPage";
-import { convertWikitextToMarkdown } from "./convertWikitextToMarkdown";
 
 // ****************************************************************************
 // * This is a program to convert PmWiki binary files to Markdown files.      *
@@ -26,6 +25,7 @@ function convertPmWikiToMarkdown(
 		// lets check if input file is a file or a folder
 		const stats = fs.statSync(inputFilePath);
 		if (stats.isDirectory()) {
+			console.log("Converting all files in the folder: ", inputFilePath);
 			// its a folder
 			const files = fs.readdirSync(inputFilePath);
 			for (const file of files) {
@@ -33,6 +33,7 @@ function convertPmWikiToMarkdown(
 				convertPmWikiFileToMarkdown(input, outputFilePath);
 			}
 		} else {
+			console.log("Converting the file: ", inputFilePath);
 			// its a file
 			convertPmWikiFileToMarkdown(inputFilePath, outputFilePath);
 		}
@@ -52,7 +53,7 @@ function writeMarkdownFile(mdd: MarkdownPage, outputFilePath: string) {
 		}
 
 		// Write the markdown file
-		fs.writeFileSync(`${siteFolder}/${mdd.title}.md`, mdd.toMarkdown());
+		fs.writeFileSync(`${siteFolder}/${mdd.name}.md`, mdd.toMarkdown());
 	} catch (err) {
 		console.error("Error writing the file:", err);
 	}
@@ -64,22 +65,10 @@ function convertPmWikiFileToMarkdown(
 ) {
 	try {
 		const data = fs.readFileSync(inputFilePath, "utf8");
-		const mdd = new MarkdownPage();
-		const lines = data.split("\n");
-		for (const line of lines) {
-			if (line.startsWith("time=")) {
-				mdd.updated = line.split("=")[1];
-			} else if (line.startsWith("name=")) {
-				const name = line.split("=")[1];
-				const parts = name.split(".");
-				mdd.title = parts[1];
-				mdd.site = parts[0];
-			} else if (line.startsWith("text=")) {
-				const wikitext = line.split("=")[1];
-				mdd.body = convertWikitextToMarkdown(wikitext);
-			}
-		}
-		writeMarkdownFile(mdd, outputFilePath);
+		console.log("Converting the file: ", inputFilePath);
+		const md = MarkdownPage.fromPmWikiFile(data);
+		console.log("Writing the file: ", `${outputFilePath}/${md.site}/${md.name}.md`);
+		writeMarkdownFile(md, outputFilePath);
 	} catch (err) {
 		console.error("Error reading the file:", err);
 	}
