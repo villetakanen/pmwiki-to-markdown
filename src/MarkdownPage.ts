@@ -38,8 +38,8 @@ type FrontMatter = {
  * - time, time=1257271361 -> updated: 2009-11-03T14:56:01.000Z
  * - author, author=3rdOrleans -> author: 3rdOrleans
  * - ctime, ctime=1257271361 -> created: 2009-11-03T14:56:01.000Z
- * 
- * @param file 
+ *
+ * @param file
  */
 function getFrontMatter(file: string): FrontMatter {
 	const frontMatter: FrontMatter = {};
@@ -53,7 +53,9 @@ function getFrontMatter(file: string): FrontMatter {
 
 	const time = file.match(/time=(.*)/);
 	if (time) {
-		frontMatter.updated = new Date(Number.parseInt(time[1], 10) * 1000).toISOString();
+		frontMatter.updated = new Date(
+			Number.parseInt(time[1], 10) * 1000,
+		).toISOString();
 	}
 
 	const author = file.match(/author=(.*)/);
@@ -63,18 +65,19 @@ function getFrontMatter(file: string): FrontMatter {
 
 	const ctime = file.match(/ctime=(.*)/);
 	if (ctime) {
-		frontMatter.created = new Date(Number.parseInt(ctime[1], 10) * 1000).toISOString();
+		frontMatter.created = new Date(
+			Number.parseInt(ctime[1], 10) * 1000,
+		).toISOString();
 	}
 
 	return frontMatter;
-
 }
 
 /**
  *  Body is in the field "text" in the pmwiki file, we need to convert it to markdown,
  *  the field is in a single line, and line ends with a newline character
- * 
- * @param file 
+ *
+ * @param file
  */
 function getBody(file: string): string {
 	const body = file.match(/text=(.*)/);
@@ -99,7 +102,7 @@ function fromPmWikiFile(file: string): MarkdownPage {
 
 	page.body = body;
 
-	console.log('returning page ', page.name, ' of site ', page.site);
+	console.log("returning page ", page.name, " of site ", page.site);
 
 	return page;
 }

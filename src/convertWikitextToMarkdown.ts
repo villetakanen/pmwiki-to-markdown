@@ -46,6 +46,23 @@ function convertHeadings(text: string): string {
 }
 
 /**
+ * PmWiki uses * for unordered lists and # for ordered lists. While these are similar to markdown,
+ * intended lists are done with co-joined * or # characters. We need to convert these to proper
+ * markdown lists.
+ *
+ * @param text
+ */
+function convertLists(text: string): string {
+	return text
+		.replace(/\n\*{1,}/g, (match) => {
+			return match.replace(/\*/g, "  *");
+		})
+		.replace(/\n#{1,}/g, (match) => {
+			return match.replace(/#/g, "  #");
+		});
+}
+
+/**
  * Converts wikilinks to markdown links
  *
  * [[Page Name]] -> [Page Name](PageName.md)
@@ -72,8 +89,10 @@ export function convertWikitextToMarkdown(wikitext: string) {
 	return addLineBreaks(
 		convertHeadings(
 			convertInlineStyles(
-				convertWikiLinks(
-					stripWikiDirectives(flattenInLineStyles(stripWikiStyles(wikitext))),
+				convertLists(
+					convertWikiLinks(
+						stripWikiDirectives(flattenInLineStyles(stripWikiStyles(wikitext))),
+					),
 				),
 			),
 		),

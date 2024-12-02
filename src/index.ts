@@ -67,7 +67,10 @@ function convertPmWikiFileToMarkdown(
 		const data = fs.readFileSync(inputFilePath, "utf8");
 		console.log("Converting the file: ", inputFilePath);
 		const md = MarkdownPage.fromPmWikiFile(data);
-		console.log("Writing the file: ", `${outputFilePath}/${md.site}/${md.name}.md`);
+		console.log(
+			"Writing the file: ",
+			`${outputFilePath}/${md.site}/${md.name}.md`,
+		);
 		writeMarkdownFile(md, outputFilePath);
 	} catch (err) {
 		console.error("Error reading the file:", err);
