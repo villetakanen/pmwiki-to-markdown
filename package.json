@@ -5,6 +5,7 @@
 		"build": "tsc && vite build",
 		"start": "node dist/index.js",
 		"check": "biome check --write",
+		"test": "vitest",
 		"test-run": "tsc && vite build && node dist/index.js -i test-materials -o test-results"
 	},
 	"bin": {
@@ -14,7 +15,8 @@
 		"@biomejs/biome": "1.9.4",
 		"@types/node": "^22.8.7",
 		"typescript": "^5.6.3",
-		"vite": "^5.4.10"
+		"vite": "^5.4.10",
+		"vitest": "^2.1.8"
 	},
 	"dependencies": {
 		"commander": "^12.1.0",
