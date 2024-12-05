@@ -99,31 +99,74 @@ function convertHorizontalRules(text: string): string {
 	return text.replace(/----/g, "\n---\n");
 }
 
+
+/**
+ * Stream parse the inline styles, we need to ensure that we have the correct amount of whitespaces
+ * around the bold and italic text.
+ */
+function parseInlineBold(remainingText: string, inside = false): string {
+  // On bold, add __ to the blocks array
+  const boldTokenIndex = remainingText.indexOf("'''");
+  if (!inside) {
+	if (boldTokenIndex > -1) {
+	  // We are inside a bold block, so we want to return the text starting with ' __'
+	  const before = boldTokenIndex === 0 ? '' : remainingText.slice(0, boldTokenIndex);
+	  const after = parseInlineBold(remainingText.slice(boldTokenIndex + 3), true);
+	  return `${before.trim()} __${after.trim()}`;
+    }
+	// the remaining text does not contain any bold tokens, so we can just return the text
+	return remainingText;
+  }
+  if (boldTokenIndex > -1)  {
+    // We are inside a bold block, so we want to return the text starting with '__ '
+    const before = remainingText.slice(0, boldTokenIndex);
+    const after = parseInlineBold(remainingText.slice(boldTokenIndex + 3));
+    return `${before.trim()}__ ${after?.trim()}`;
+  }
+  return remainingText;
+}
+function parseInlineItalic(remainingText: string, inside = false): string {
+	  // On italic, add _ to the blocks array
+  const italicTokenIndex = remainingText.indexOf("''");
+  if (!inside) {
+	if (italicTokenIndex > -1) {
+	  // We are inside a italic block, so we want to return the text starting with ' _'
+	  const before = italicTokenIndex === 0 ? '' : remainingText.slice(0, italicTokenIndex);
+	  const after = parseInlineItalic(remainingText.slice(italicTokenIndex + 2), true);
+	  return `${before.trim()} _${after.trim()}`;
+	}
+	// the remaining text does not contain any italic tokens, so we can just return the text
+	return remainingText;
+  }
+  if (italicTokenIndex > -1)  {
+	// We are inside a italic block, so we want to return the text starting with '_ '
+	const before = remainingText.slice(0, italicTokenIndex);
+	const after = parseInlineItalic(remainingText.slice(italicTokenIndex + 2));
+	return `${before.trim()}_ ${after?.trim()}`;
+  }
+  return remainingText;
+}
+
 /**
  * Converts inline styles to markdown
  * ''bold'' -> __bold__
  * '''italic''' -> _italic_
  */
 export function convertInlineStyles(text: string): string {
-	// First we need to convert bold and italic text
-	const phase1 = text
-		.replace(/'''\s*(.*?)\s*'''/g, "__$1__")
-		.replace(/''\s*(.*?)\s*''/g, "_$1_");
-	// Lasttly, PmWiki lets you omit the whitespace _after_ the style and the text after the style
-	// so we need to add this back in. '_italic_, __bold__and _italic_' -> _italic_, __bold__ and _italic_'
-	return phase1.replace(/(__|\*)\s*(.*?)\s*(__|\*)([^\s])/g, "$1$2$3 $4");
+  const bold = parseInlineBold(text);
+  return parseInlineItalic(bold);
 }
 
 export function convertWikitextToMarkdown(wikitext: string) {
-	const inlineStyles = convertInlineStyles(wikitext);
-	const lineBreaks = convertLineBreaks(inlineStyles);
+	const lineBreaks = convertLineBreaks(wikitext);
+	const inlineStyles = convertInlineStyles(lineBreaks);
 	return convertHeadings(
 		convertInlineStyles(
 			convertLists(
 				convertHorizontalRules(
 					convertWikiLinks(
 						stripWikiDirectives(
-							flattenInLineStyles(stripWikiStyles(lineBreaks)),
+							flattenInLineStyles(stripWikiStyles(inlineStyles)),
 						),
 					),
 				),
