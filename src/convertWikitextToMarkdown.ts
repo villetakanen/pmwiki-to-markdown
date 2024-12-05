@@ -90,13 +90,13 @@ function convertWikiLinks(text: string): string {
 }
 
 /**
- * PmWiki uses ---- to represent a horizontal rule. We need to convert this to --- in markdown.
+ * PmWiki uses --- or ---- to represent a horizontal rule. We need to convert this to --- in markdown.
  *
  * Also adding a newline before and after the horizontal rule, to prevent it from being a header
  * underline.
  */
-function convertHorizontalRules(text: string): string {
-	return text.replace(/----/g, "\n---\n");
+export function convertHorizontalRules(text: string): string {
+	return text.replace(/----/g, "---").replace(/---/g, "\n\n---\n\n");
 }
 
 
@@ -160,15 +160,16 @@ export function convertInlineStyles(text: string): string {
 export function convertWikitextToMarkdown(wikitext: string) {
 	const lineBreaks = convertLineBreaks(wikitext);
 	const inlineStyles = convertInlineStyles(lineBreaks);
+	const rulers = convertHorizontalRules(inlineStyles);
 	return convertHeadings(
 		convertInlineStyles(
 			convertLists(
-				convertHorizontalRules(
+
 					convertWikiLinks(
 						stripWikiDirectives(
-							flattenInLineStyles(stripWikiStyles(inlineStyles)),
+							flattenInLineStyles(stripWikiStyles(rulers)),
 						),
-					),
+					
 				),
 			),
 		),
