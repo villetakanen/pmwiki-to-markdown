@@ -49,17 +49,22 @@ function convertHeadings(text: string): string {
  * PmWiki uses * for unordered lists and # for ordered lists. While these are similar to markdown,
  * intended lists are done with co-joined * or # characters. We need to convert these to proper
  * markdown lists.
+ * 
+ * Additionally we need to convert # used for ordered lists in PmWiki to markdown ordered lists 
+ * 1. 2. 3. etc.
  *
  * @param text
  */
 function convertLists(text: string): string {
-	return text
-		.replace(/\n\*{1,}/g, (match) => {
-			return match.replace(/\*/g, "  *");
-		})
-		.replace(/\n#{1,}/g, (match) => {
-			return match.replace(/#/g, "  #");
-		});
+	// First lets convert unordered lists, this is straightforward, just add a space after each *
+	// then lets convert ordered lists, we do a naive
+	// conversion by replacing all # with 1. and then all ## with '  1.' etc.
+	return text.replace(/\*{1,4}/g, (match) => {
+		return `${"*".repeat(match.length)} `;
+	})
+	.replace(/#{1,4}/g, (match) => {
+		return `${" ".repeat(match.length - 1)}1. `;
+	});
 }
 
 /**
@@ -76,6 +81,17 @@ function convertWikiLinks(text: string): string {
 		return `[${linkText}](${pageName})`;
 	});
 }
+
+/** 
+ * PmWiki uses ---- to represent a horizontal rule. We need to convert this to --- in markdown.
+ * 
+ * Also adding a newline before and after the horizontal rule, to prevent it from being a header
+ * underline.
+ */
+function convertHorizontalRules(text: string): string {
+	return text.replace(/----/g, "\n---\n");
+}
+
 /**
  * Converts inline styles to markdown
  * ''bold'' -> **bold**
@@ -90,9 +106,11 @@ export function convertWikitextToMarkdown(wikitext: string) {
 		convertHeadings(
 			convertInlineStyles(
 				convertLists(
+					convertHorizontalRules(
 					convertWikiLinks(
 						stripWikiDirectives(flattenInLineStyles(stripWikiStyles(wikitext))),
-					),
+					)
+				)
 				),
 			),
 		),
