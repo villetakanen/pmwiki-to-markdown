@@ -1,26 +1,11 @@
 import { convertImageLinks } from "./convertImageLinks";
+import { stripWikiRules } from "./stripWikiRules";
 
 /**
  * In Wikitext, a style starts with >>[style]3c%3c, we need to strip this out.
  */
 function stripWikiStyles(wikitext: string) {
   return wikitext.replace(/>>.*?3c%3c/g, "");
-}
-
-/**
- * An inline style starts with %25[term]%25 and ends with %25%25. We need
- * flatten these to ** for bold.
- */
-function flattenInLineStyles(wikitext: string) {
-  return wikitext.replace(/%25(.*?)%25/g, "**").replace(/%25%25/g, "**");
-}
-
-/**
- * Wiki directives are surrounded by (: and :). We need to strip these out.
- */
-
-function stripWikiDirectives(wikitext: string) {
-  return wikitext.replace(/\(:.*?:\)/g, "");
 }
 
 /**
@@ -167,7 +152,7 @@ export function convertInlineStyles(text: string): string {
 }
 
 export function convertWikitextToMarkdown(wikitext: string) {
-  const stripped = stripWikiDirectives(wikitext);
+  const stripped = stripWikiRules(wikitext);
   const lineBreaks = convertLineBreaks(stripped);
   const inlineStyles = convertInlineStyles(lineBreaks);
   const rulers = convertHorizontalRules(inlineStyles);
@@ -176,7 +161,7 @@ export function convertWikitextToMarkdown(wikitext: string) {
   return convertInlineStyles(
       convertLists(
         convertWikiLinks(
-          flattenInLineStyles(stripWikiStyles(images)),
+          images
         ),
       ),
   );
