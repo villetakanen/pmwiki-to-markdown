@@ -12,6 +12,7 @@ program
   .description("Convert pmwiki binary file to Markdown")
   .requiredOption("-i, --input <file>", "Input pmwiki file or folder")
   .option("-o, --output <file>", "Output folder, default is current folder")
+  .option("-u, --uid <uid>", "User id to use for the conversion")
   .parse(process.argv);
 
 const options = program.opts();
@@ -30,7 +31,7 @@ function convertPmWikiToMarkdown(
       const files = fs.readdirSync(inputFilePath);
       for (const file of files) {
         const input = `${inputFilePath}/${file}`;
-        convertPmWikiFileToMarkdown(input, outputFilePath);
+        convertPmWikiFileToMarkdown(input, outputFilePath, options.uid);
       }
     } else {
       console.log("Converting the file: ", inputFilePath);
@@ -62,11 +63,15 @@ function writeMarkdownFile(mdd: MarkdownPage, outputFilePath: string) {
 function convertPmWikiFileToMarkdown(
   inputFilePath: string,
   outputFilePath: string,
+  uid?: string,
 ) {
   try {
     const data = fs.readFileSync(inputFilePath, "utf8");
     console.log("Converting the file: ", inputFilePath);
     const md = MarkdownPage.fromPmWikiFile(data);
+    if (uid) {
+      md.author = uid;
+    }
     console.log(
       "Writing the file: ",
       `${outputFilePath}/${md.site}/${md.name}.md`,

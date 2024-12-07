@@ -1,3 +1,26 @@
+const extensions = [
+  "jpg",
+  "jpeg",
+  "png",
+  "gif",
+  "svg",
+  "bmp",
+  "webp",
+  "ico",
+  "tiff",
+  "tif",
+  "JPG",
+  "JPEG",
+  "PNG",
+  "GIF",
+  "SVG",
+  "BMP",
+  "WEBP",
+  "ICO",
+  "TIFF",
+  "TIF",
+];
+
 /**
  * Some example wikitext:
  * w:  http://images.wikia.com/forgottenrealms/images/e/ed/Pseudodragon.JPG
@@ -10,7 +33,13 @@
  * @returns
  */
 export function convertImageLinks(wikitext: string) {
-  return wikitext.replace(/\bhttp:\/\/\S+\b/g, (match) => {
+  const extensionsPattern = extensions.join("|");
+  const regex = new RegExp(
+    `\\bhttp:\\/\\/\\S+\\.(${extensionsPattern})\\b`,
+    "gi",
+  );
+
+  return wikitext.replace(regex, (match) => {
     return `![a converted image link](${match})`;
   });
 }

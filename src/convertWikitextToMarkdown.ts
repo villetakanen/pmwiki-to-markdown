@@ -25,6 +25,13 @@ function convertHeadings(text: string): string {
 }
 
 /**
+ * PmWiki uses ~uid for user tags, we need to convert these to more standard @uid tags.
+ */
+export function convertUserTags(text: string): string {
+  return text.replace(/~(.*?)(\s|$)/g, "@$1$2");
+}
+
+/**
  * PmWiki uses * for unordered lists and # for ordered lists. While these are similar to markdown,
  * intended lists are done with co-joined * or # characters. We need to convert these to proper
  * markdown lists.
@@ -158,11 +165,5 @@ export function convertWikitextToMarkdown(wikitext: string) {
   const rulers = convertHorizontalRules(inlineStyles);
   const headigns = convertHeadings(rulers);
   const images = convertImageLinks(headigns);
-  return convertInlineStyles(
-      convertLists(
-        convertWikiLinks(
-          images
-        ),
-      ),
-  );
+  return convertInlineStyles(convertLists(convertWikiLinks(images)));
 }

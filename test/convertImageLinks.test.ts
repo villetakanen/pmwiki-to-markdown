@@ -14,4 +14,9 @@ describe("convertImageLinks", () => {
     const expectedMarkdown = "Attach:image.png";
     expect(convertImageLinks(wikitext)).toBe(expectedMarkdown);
   });
+  it("Should not touch url-links", () => {
+    const wikitext = "http://example.com";
+    const expectedMarkdown = "http://example.com";
+    expect(convertImageLinks(wikitext)).toBe(expectedMarkdown);
+  });
 });
