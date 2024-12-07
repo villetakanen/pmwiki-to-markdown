@@ -26,9 +26,15 @@ function convertHeadings(text: string): string {
 
 /**
  * PmWiki uses ~uid for user tags, we need to convert these to more standard @uid tags.
+ * 
+ * Additionally, some user tags are used in links, we need to convert these as well:
+ * [[~V]] -> @V
  */
 export function convertUserTags(text: string): string {
-  return text.replace(/~(.*?)(\s|$)/g, "@$1$2");
+  //return text.replace(/~(.*?)(\s|$)/g, "@$1$2");
+  return text.replace(/\[\[~(.*?)\]\]/g, (match, p1) => {
+    return `@${p1}`;
+  }).replace(/~(.*?)(\s|$)/g, "@$1$2");
 }
 
 /**
@@ -79,7 +85,7 @@ function convertWikiLinks(text: string): string {
     const parts = p1.split("|");
     const pageName = parts[0].replace(/ /g, "");
     const linkText = parts[1] ? parts[1] : parts[0];
-    return `[${linkText}](${pageName})`;
+    return `[${linkText}](${pageName.toLowerCase()})`;
   });
 }
 
@@ -163,7 +169,9 @@ export function convertWikitextToMarkdown(wikitext: string) {
   const lineBreaks = convertLineBreaks(stripped);
   const inlineStyles = convertInlineStyles(lineBreaks);
   const rulers = convertHorizontalRules(inlineStyles);
-  const headigns = convertHeadings(rulers);
+  const lists = convertLists(rulers);
+  const headigns = convertHeadings(lists);
   const images = convertImageLinks(headigns);
-  return convertInlineStyles(convertLists(convertWikiLinks(images)));
+  const userTags = convertUserTags(images);
+  return convertInlineStyles(convertWikiLinks(userTags));
 }

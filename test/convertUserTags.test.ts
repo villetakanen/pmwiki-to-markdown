@@ -7,4 +7,9 @@ describe("convertUserTags", () => {
     const expectedMarkdown = "This is @user1 text @user2";
     expect(convertUserTags(wikitext)).toBe(expectedMarkdown);
   });
+  it("should convert user tag links to more standard @uid tags", () => {
+    const wikitext = "This is [[~Laerlorn]] text [[~user2]]";
+    const expectedMarkdown = "This is @Laerlorn text @user2";
+    expect(convertUserTags(wikitext)).toBe(expectedMarkdown);
+  });
 });
