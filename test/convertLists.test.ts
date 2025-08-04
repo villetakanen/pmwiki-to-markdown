@@ -35,4 +35,22 @@ describe("convertWikitextToMarkdown", () => {
     const expectedMarkdown = "* Item 1\n* Item 2";
     expect(convertLists(wikitext)).toBe(expectedMarkdown);
   });
+
+  it("should add empty line after list when followed by non-list content", () => {
+    const wikitext = `* Item 1
+* Item 2
+* Item 3
+Hahmot`;
+    const expectedMarkdown = "* Item 1\n* Item 2\n* Item 3\n\nHahmot";
+    expect(convertLists(wikitext)).toBe(expectedMarkdown);
+  });
+
+  it("should add empty line after ordered list when followed by non-list content", () => {
+    const wikitext = `# Item 1
+# Item 2
+# Item 3
+Next section`;
+    const expectedMarkdown = "1. Item 1\n1. Item 2\n1. Item 3\n\nNext section";
+    expect(convertLists(wikitext)).toBe(expectedMarkdown);
+  });
 });

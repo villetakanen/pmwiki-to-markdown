@@ -57,13 +57,22 @@ export function convertLists(text: string): string {
   // First lets convert unordered lists, this is straightforward, just add a space after each *
   // then lets convert ordered lists, we do a naive
   // conversion by replacing all # with 1. and then all ## with '  1.' etc.
-  return text
+  let result = text
     .replace(/^\*{1,4}\s*/gm, (match) => {
       return `${"  ".repeat(match.trim().length - 1)}* `;
     })
     .replace(/^#{1,4}\s*/gm, (match) => {
       return `${"  ".repeat(match.trim().length - 1)}1. `;
     });
+
+  // Add empty lines after lists when followed by non-list content
+  // Match a list item (lines starting with markdown list markers) followed directly by a non-list line
+  result = result.replace(
+    /^(\s*(?:\*|1\.) .+)(\n)(?=^(?!\s*(?:\*|1\.) |\s*$)[^\n])/gm,
+    '$1\n$2'
+  );
+
+  return result;
 }
 
 /**
@@ -221,8 +230,8 @@ export function convertTables(text: string): string {
     const numColumns = cleanFirstLine.split('||').length;
     
     // Add empty header row
-    const emptyHeaders = Array(numColumns).fill('').map(() => '   ').join(' | ');
-    markdownRows.push(`| ${emptyHeaders} |`);
+    const emptyHeaders = Array(numColumns).fill('   ').join('|');
+    markdownRows.push(`|${emptyHeaders}|`);
     
     // Add separator row
     const separators = Array(numColumns).fill('---');

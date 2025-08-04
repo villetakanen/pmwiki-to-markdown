@@ -7,7 +7,7 @@ describe("convertTables", () => {
 ||Cell 1||Cell 2||Cell 3||
 ||Cell 4||Cell 5||Cell 6||`;
 
-    const expected = `|      |      |      |
+    const expected = `|   |   |   |
 |---|---|---|
 | Cell 1 | Cell 2 | Cell 3 |
 | Cell 4 | Cell 5 | Cell 6 |`;
@@ -22,7 +22,7 @@ describe("convertTables", () => {
 ||Intimidation +11 ||Lore (Library) +13•  ||Lore (Pathfinder Society) +13• ||`;
 
     const expected = `__Skills__ 
-|      |      |      |
+|   |   |   |
 |---|---|---|
 | Acrobatics +14• | Arcana +11 | Athletics +12• |
 | Crafting +11 | Deception +13• | Diplomacy +17••• |
@@ -37,7 +37,7 @@ describe("convertTables", () => {
 ||Row 1 Col 1||Row 1 Col 2||
 ||Row 2 Col 1||Row 2 Col 2||`;
 
-    const expected = `|      |      |
+    const expected = `|   |   |
 |---|---|
 | Header 1 | Header 2 |
 | Row 1 Col 1 | Row 1 Col 2 |
