@@ -158,6 +158,22 @@ function parseInlineItalic(remainingText: string, inside = false): string {
 }
 
 /**
+ * Converts PMWiki blockquotes to markdown blockquotes
+ * ->text -> > text
+ */
+export function convertBlockquotes(text: string): string {
+  return text.replace(/^->/gm, '> ');
+}
+
+/**
+ * Converts PMWiki bold markup [+text+] to markdown **text**
+ * [+[Link Text](url) additional text+] -> **[Link Text](url) additional text**
+ */
+export function convertBoldMarkup(text: string): string {
+  return text.replace(/\[\+([\s\S]*?)\+\]/g, '**$1**');
+}
+
+/**
  * Converts inline styles to markdown
  * ''bold'' -> __bold__
  * '''italic''' -> _italic_
@@ -177,5 +193,9 @@ export function convertWikitextToMarkdown(wikitext: string) {
   const images = convertImageLinks(headigns);
   const userTags = convertUserTags(images);
   const markers = cleanWikiMarkers(userTags);
-  return convertInlineStyles(convertWikiLinks(markers));
+  const wikiLinks = convertWikiLinks(markers);
+  const finalInlineStyles = convertInlineStyles(wikiLinks);
+  const boldMarkup = convertBoldMarkup(finalInlineStyles);
+  const blockquotes = convertBlockquotes(boldMarkup);
+  return blockquotes;
 }
