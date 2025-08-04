@@ -26,7 +26,6 @@ function convertPmWikiToMarkdown(
     // lets check if input file is a file or a folder
     const stats = fs.statSync(inputFilePath);
     if (stats.isDirectory()) {
-      console.log("Converting all files in the folder: ", inputFilePath);
       // its a folder
       const files = fs.readdirSync(inputFilePath);
       for (const file of files) {
@@ -34,7 +33,6 @@ function convertPmWikiToMarkdown(
         convertPmWikiFileToMarkdown(input, outputFilePath, options.uid);
       }
     } else {
-      console.log("Converting the file: ", inputFilePath);
       // its a file
       convertPmWikiFileToMarkdown(inputFilePath, outputFilePath);
     }
@@ -54,7 +52,9 @@ function writeMarkdownFile(mdd: MarkdownPage, outputFilePath: string) {
     }
 
     // Write the markdown file
-    fs.writeFileSync(`${siteFolder}/${mdd.name}.md`, mdd.toMarkdown());
+    const outputFile = `${siteFolder}/${mdd.name}.md`;
+    fs.writeFileSync(outputFile, mdd.toMarkdown());
+    console.log("Converted page:", outputFile);
   } catch (err) {
     console.error("Error writing the file:", err);
   }
@@ -67,15 +67,10 @@ function convertPmWikiFileToMarkdown(
 ) {
   try {
     const data = fs.readFileSync(inputFilePath, "utf8");
-    console.log("Converting the file: ", inputFilePath);
     const md = MarkdownPage.fromPmWikiFile(data);
     if (uid) {
       md.author = uid;
     }
-    console.log(
-      "Writing the file: ",
-      `${outputFilePath}/${md.site}/${md.name}.md`,
-    );
     writeMarkdownFile(md, outputFilePath);
   } catch (err) {
     console.error("Error reading the file:", err);

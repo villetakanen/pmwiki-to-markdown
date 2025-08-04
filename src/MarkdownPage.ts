@@ -102,7 +102,5 @@ function fromPmWikiFile(file: string): MarkdownPage {
 
   page.body = body;
 
-  console.log("returning page ", page.name, " of site ", page.site);
-
   return page;
 }
