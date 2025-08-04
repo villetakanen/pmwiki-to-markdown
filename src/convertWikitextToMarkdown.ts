@@ -158,6 +158,14 @@ function parseInlineItalic(remainingText: string, inside = false): string {
 }
 
 /**
+ * Converts PMWiki small text markup [-text-] to HTML span tags
+ * [-text-] -> <span class="text-small">text</span>
+ */
+export function convertSmallText(text: string): string {
+  return text.replace(/\[-([\s\S]*?)-\]/g, '<span class="text-small">$1</span>');
+}
+
+/**
  * Converts PMWiki blockquotes to markdown blockquotes
  * ->text -> > text
  */
@@ -196,6 +204,7 @@ export function convertWikitextToMarkdown(wikitext: string) {
   const wikiLinks = convertWikiLinks(markers);
   const finalInlineStyles = convertInlineStyles(wikiLinks);
   const boldMarkup = convertBoldMarkup(finalInlineStyles);
-  const blockquotes = convertBlockquotes(boldMarkup);
+  const smallText = convertSmallText(boldMarkup);
+  const blockquotes = convertBlockquotes(smallText);
   return blockquotes;
 }
