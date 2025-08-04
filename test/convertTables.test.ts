@@ -7,8 +7,9 @@ describe("convertTables", () => {
 ||Cell 1||Cell 2||Cell 3||
 ||Cell 4||Cell 5||Cell 6||`;
 
-    const expected = `| Cell 1 | Cell 2 | Cell 3 |
-|--------|--------|--------|
+    const expected = `|      |      |      |
+|---|---|---|
+| Cell 1 | Cell 2 | Cell 3 |
 | Cell 4 | Cell 5 | Cell 6 |`;
 
     expect(convertTables(input)).toBe(expected);
@@ -21,8 +22,9 @@ describe("convertTables", () => {
 ||Intimidation +11 ||Lore (Library) +13•  ||Lore (Pathfinder Society) +13• ||`;
 
     const expected = `__Skills__ 
+|      |      |      |
+|---|---|---|
 | Acrobatics +14• | Arcana +11 | Athletics +12• |
-|-----------------|------------|----------------|
 | Crafting +11 | Deception +13• | Diplomacy +17••• |
 | Intimidation +11 | Lore (Library) +13• | Lore (Pathfinder Society) +13• |`;
 
@@ -35,8 +37,9 @@ describe("convertTables", () => {
 ||Row 1 Col 1||Row 1 Col 2||
 ||Row 2 Col 1||Row 2 Col 2||`;
 
-    const expected = `| Header 1 | Header 2 |
-|----------|----------|
+    const expected = `|      |      |
+|---|---|
+| Header 1 | Header 2 |
 | Row 1 Col 1 | Row 1 Col 2 |
 | Row 2 Col 1 | Row 2 Col 2 |`;
 
@@ -62,15 +65,17 @@ Second table:
 ||G||H||`;
 
     const expected = `First table:
-| A | B |
+|   |   |
 |---|---|
+| A | B |
 | C | D |
 
 Some text in between.
 
 Second table:
-| E | F |
+|   |   |
 |---|---|
+| E | F |
 | G | H |`;
 
     expect(convertTables(input)).toBe(expected);

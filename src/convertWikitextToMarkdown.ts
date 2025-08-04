@@ -188,8 +188,9 @@ export function convertBoldMarkup(text: string): string {
  * ||Cell 4||Cell 5||Cell 6||
  * 
  * becomes:
+ * |   |   |   |
+ * |---|---|---|
  * | Cell 1 | Cell 2 | Cell 3 |
- * |--------|--------|--------|
  * | Cell 4 | Cell 5 | Cell 6 |
  */
 export function convertTables(text: string): string {
@@ -214,7 +215,21 @@ export function convertTables(text: string): string {
       markdownRows.push(`${prefixText} `);
     }
     
-    tableLines.forEach((line: string, index: number) => {
+    // Get the number of columns from the first row
+    const firstLine = tableLines[0];
+    const cleanFirstLine = firstLine.replace(/^\|\|/, '').replace(/\|\|$/, '');
+    const numColumns = cleanFirstLine.split('||').length;
+    
+    // Add empty header row
+    const emptyHeaders = Array(numColumns).fill('').map(() => '   ').join(' | ');
+    markdownRows.push(`| ${emptyHeaders} |`);
+    
+    // Add separator row
+    const separators = Array(numColumns).fill('---');
+    markdownRows.push(`|${separators.join('|')}|`);
+    
+    // Add all data rows
+    for (const line of tableLines) {
       // Remove leading and trailing ||, then split by ||
       const cleanLine = line.replace(/^\|\|/, '').replace(/\|\|$/, '');
       const cells = cleanLine.split('||').map((cell: string) => cell.trim());
@@ -222,18 +237,7 @@ export function convertTables(text: string): string {
       // Create markdown table row
       const markdownRow = `| ${cells.join(' | ')} |`;
       markdownRows.push(markdownRow);
-      
-      // Add separator row after first row (header)
-      if (index === 0 && cells.length > 0) {
-        // Create separator based on cell length + 2 for padding, minimum 3 dashes
-        const separators = cells.map((cell: string) => {
-          const separatorLength = Math.max(cell.length + 2, 3);
-          return '-'.repeat(separatorLength);
-        });
-        const separator = `|${separators.join('|')}|`;
-        markdownRows.push(separator);
-      }
-    });
+    }
     
     const result = markdownRows.join('\n');
     
