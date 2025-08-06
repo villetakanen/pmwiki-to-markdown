@@ -10,8 +10,8 @@ import { convertLists } from "./convertLists";
 import { convertSmallText } from "./convertSmallText";
 import { convertTables } from "./convertTables";
 import { convertUserTags } from "./convertUserTags";
+import { applyPostProcessing } from "./postProcessing";
 import { stripWikiRules } from "./stripWikiRules";
-import { trimLeadingWhitespace } from "./trimLeadingWhitespace";
 
 interface ConversionOptions {
   webp?: boolean;
@@ -148,6 +148,9 @@ export function convertWikitextToMarkdown(
   const smallText = convertSmallText(boldMarkup);
   const blockquotes = convertBlockquotes(smallText);
   const tables = convertTables(blockquotes);
-  const trimmed = trimLeadingWhitespace(tables);
-  return trimmed;
+
+  // Apply post-processing steps (trimming, line breaks, etc.)
+  const postProcessed = applyPostProcessing(tables);
+
+  return postProcessed;
 }
