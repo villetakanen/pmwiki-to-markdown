@@ -1,9 +1,16 @@
 // Debug script to test horizontal rules conversion
-import { convertWikitextToMarkdown, convertLineBreaks, convertInlineStyles, convertHorizontalRules, convertBoldMarkup } from "./dist/index.js";
+import {
+  convertBoldMarkup,
+  convertHorizontalRules,
+  convertInlineStyles,
+  convertLineBreaks,
+  convertWikitextToMarkdown,
+} from "./dist/index.js";
 import { stripWikiRules } from "./dist/index.js";
 
 // This is the problematic text from Abel's file
-const testText = "'''Init''' +6 (+5 dex +1 insight)\\%0a'''Senses''' Perception +7, low-light vision%0a----";
+const testText =
+  "'''Init''' +6 (+5 dex +1 insight)\\%0a'''Senses''' Perception +7, low-light vision%0a----";
 
 console.log("=== Original text ===");
 console.log(JSON.stringify(testText));

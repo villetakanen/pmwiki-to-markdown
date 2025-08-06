@@ -1,60 +1,3 @@
-import { cleanWikiMarkers } from "./cleanWikiMarkers";
-import { convertBlockquotes } from "./convertBlockquotes";
-import { convertBoldMarkup } from "./convertBoldMarkup";
-import { convertDirectiveTables } from "./convertDirectiveTables";
-import { convertHorizontalRules } from "./convertHorizontalRules";
-import { convertImageLinks } from "./convertImageLinks";
-import { convertInlineStyles } from "./convertInlineStyles";
-import { convertLineBreaks } from "./convertLineBreaks";
-import { convertLists } from "./convertLists";
-import { convertSmallText } from "./convertSmallText";
-import { convertTables } from "./convertTables";
-import { convertUserTags } from "./convertUserTags";
-import { stripWikiRules } from "./stripWikiRules";
-import { trimLeadingWhitespace } from "./trimLeadingWhitespace";
-
-interface ConversionOptions {
-  webp?: boolean;
-}
-
-/**
- * In Wikitext, a style starts with >>[style]3c%3c, we need to strip this out.
- */
-function stripWikiStyles(wikitext: string) {
-  return wikitext.replace(/>>.*?3c%3c/g, "");
-}
-
-/**
- * We need to convert lines like
- * !Heading 1
- * to # Heading 1
- * and
- * !!Heading 2
- * to ## Heading 2
- *
- * to level 4 headings.
- */
-function convertHeadings(text: string): string {
-  return text.replace(/!{1,4}/g, (match) => {
-    return `${"#".repeat(match.length)} `;
-  });
-}
-
-/**
- * Converts wikilinks to markdown links
- *
- * [[Page Name]] -> [Page Name](PageName.md)
- * [[PageName | Link Text]] -> [Link Text](PageName.md)
- */
-function convertWikiLinks(text: string): string {
-  return text.replace(/\[\[(.*?)\]\]/g, (match, p1) => {
-    const parts = p1.split("|");
-    const pageName = parts[0].replace(/ /g, "");
-    const linkText = parts[1] ? parts[1] : parts[0];
-    return `[${linkText}](${pageName.toLowerCase()})`;
-  });
-}
-
 /**
  * Stream parse the inline styles, we need to ensure that we have the correct amount of whitespaces
  * around the bold and italic text.
@@ -90,6 +33,7 @@ function parseInlineBold(remainingText: string, inside = false): string {
   }
   return remainingText;
 }
+
 function parseInlineItalic(remainingText: string, inside = false): string {
   // On italic, add _ to the blocks array
   const italicTokenIndex = remainingText.indexOf("''");
@@ -122,32 +66,12 @@ function parseInlineItalic(remainingText: string, inside = false): string {
   return remainingText;
 }
 
-function preProcessWikitext(wikitext: string): string {
-  // Convert known directives
-  const directiveTables = convertDirectiveTables(wikitext);
-  // Strip rest of the wiki directives and styles
-  return stripWikiRules(directiveTables);
-}
-
-export function convertWikitextToMarkdown(
-  wikitext: string,
-  options?: ConversionOptions,
-) {
-  const prepared = preProcessWikitext(wikitext);
-  const lineBreaks = convertLineBreaks(prepared);
-  const inlineStyles = convertInlineStyles(lineBreaks);
-  const rulers = convertHorizontalRules(inlineStyles);
-  const lists = convertLists(rulers);
-  const headigns = convertHeadings(lists);
-  const images = convertImageLinks(headigns, options);
-  const userTags = convertUserTags(images);
-  const markers = cleanWikiMarkers(userTags);
-  const wikiLinks = convertWikiLinks(markers);
-  const finalInlineStyles = convertInlineStyles(wikiLinks);
-  const boldMarkup = convertBoldMarkup(finalInlineStyles);
-  const smallText = convertSmallText(boldMarkup);
-  const blockquotes = convertBlockquotes(smallText);
-  const tables = convertTables(blockquotes);
-  const trimmed = trimLeadingWhitespace(tables);
-  return trimmed;
+/**
+ * Converts inline styles to markdown
+ * ''bold'' -> __bold__
+ * '''italic''' -> _italic_
+ */
+export function convertInlineStyles(text: string): string {
+  const bold = parseInlineBold(text);
+  return parseInlineItalic(bold);
 }

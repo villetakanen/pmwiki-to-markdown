@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { convertLists } from "../src/convertWikitextToMarkdown";
+import { convertLists } from "../src/convertLists";
 
 describe("convertWikitextToMarkdown", () => {
   it("should convert wikitext bullet lists to markdown", () => {

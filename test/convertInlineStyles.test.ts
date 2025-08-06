@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { convertInlineStyles } from "../src/convertWikitextToMarkdown";
+import { convertInlineStyles } from "../src/convertInlineStyles";
 
 describe("convertInlineStyles", () => {
   it("should convert bold text to markdown", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { convertHorizontalRules } from "../src/convertWikitextToMarkdown";
+import { convertHorizontalRules } from "../src/convertHorizontalRules";
 
 describe("convertHorizontalRules", () => {
   it("should convert 4l horizontal rules to markdown", () => {

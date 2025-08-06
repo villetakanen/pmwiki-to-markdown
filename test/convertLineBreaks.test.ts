@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { convertLineBreaks } from "../src/convertWikitextToMarkdown";
+import { convertLineBreaks } from "../src/convertLineBreaks";
 
 describe("convertLineBreaks", () => {
   it("should convert PmWiki line breaks to markdown line breaks", () => {

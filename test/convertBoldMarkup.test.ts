@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { convertBoldMarkup } from "../src/convertWikitextToMarkdown";
+import { convertBoldMarkup } from "../src/convertBoldMarkup";
 
 describe("convertBoldMarkup", () => {
   it("should convert PMWiki bold markup to markdown bold", () => {

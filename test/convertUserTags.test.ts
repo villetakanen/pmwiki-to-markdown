@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { convertUserTags } from "../src/convertWikitextToMarkdown";
+import { convertUserTags } from "../src/convertUserTags";
 
 describe("convertUserTags", () => {
   it("should convert user tags to more standard @uid tags", () => {

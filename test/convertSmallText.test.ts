@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { convertSmallText } from "../src/convertWikitextToMarkdown";
+import { convertSmallText } from "../src/convertSmallText";
 
 describe("convertSmallText", () => {
   it("should convert PMWiki small text markup to HTML span tags", () => {

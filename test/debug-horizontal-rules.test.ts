@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { convertWikitextToMarkdown, convertHorizontalRules, convertLineBreaks, convertInlineStyles } from "../src/convertWikitextToMarkdown";
+import { convertHorizontalRules } from "../src/convertHorizontalRules";
+import { convertInlineStyles } from "../src/convertInlineStyles";
+import { convertLineBreaks } from "../src/convertLineBreaks";
+import { convertWikitextToMarkdown } from "../src/convertWikitextToMarkdown";
 import { stripWikiRules } from "../src/stripWikiRules";
 
 describe("Debug horizontal rules regression", () => {
   it("should reproduce the Abel.md horizontal rules issue", () => {
     // This is the problematic text from Abel's file
-    const testText = "'''Init''' +6 (+5 dex +1 insight)\\%0a'''Senses''' Perception +7, low-light vision%0a----";
-    
+    const testText =
+      "'''Init''' +6 (+5 dex +1 insight)\\%0a'''Senses''' Perception +7, low-light vision%0a----";
+
     console.log("=== Original text ===");
     console.log(JSON.stringify(testText));
 
@@ -46,17 +50,21 @@ describe("Debug horizontal rules regression", () => {
 
   it("should handle the specific case from Abel", () => {
     // After line breaks are converted, we should have:
-    const afterLineBreaks = "'''Init''' +6 (+5 dex +1 insight)\n'''Senses''' Perception +7, low-light vision\n----";
-    
+    const afterLineBreaks =
+      "'''Init''' +6 (+5 dex +1 insight)\n'''Senses''' Perception +7, low-light vision\n----";
+
     console.log("\nTesting specific case:");
     console.log("Input:", JSON.stringify(afterLineBreaks));
-    
+
     const afterInlineStyles = convertInlineStyles(afterLineBreaks);
     console.log("After inline styles:", JSON.stringify(afterInlineStyles));
-    
+
     const afterHorizontalRules = convertHorizontalRules(afterInlineStyles);
-    console.log("After horizontal rules:", JSON.stringify(afterHorizontalRules));
-    
+    console.log(
+      "After horizontal rules:",
+      JSON.stringify(afterHorizontalRules),
+    );
+
     // The problem is likely that convertInlineStyles is not preserving newlines properly
     expect(afterInlineStyles).toContain("\n");
     expect(afterHorizontalRules).toContain("---");

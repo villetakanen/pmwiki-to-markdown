@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { convertTables } from "../src/convertWikitextToMarkdown";
+import { convertTables } from "../src/convertTables";
 
 describe("convertTables", () => {
   it("should convert simple PMWiki table to markdown", () => {

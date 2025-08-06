@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { convertBlockquotes } from "../src/convertWikitextToMarkdown";
+import { convertBlockquotes } from "../src/convertBlockquotes";
 
 describe("convertBlockquotes", () => {
   it("should convert PMWiki blockquotes to markdown blockquotes", () => {

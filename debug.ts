@@ -1,8 +1,6 @@
 import { readFileSync } from "fs";
-import {
-  convertDirectiveTables,
-  convertWikitextToMarkdown,
-} from "./src/convertWikitextToMarkdown";
+import { convertDirectiveTables } from "./src/convertDirectiveTables";
+import { convertWikitextToMarkdown } from "./src/convertWikitextToMarkdown";
 
 // Read the test file
 const content = readFileSync(
