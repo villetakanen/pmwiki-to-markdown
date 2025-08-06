@@ -20,7 +20,10 @@ program
   .requiredOption("-i, --input <file>", "Input pmwiki file or folder")
   .option("-o, --output <file>", "Output folder, default is current folder")
   .option("-u, --uid <uid>", "User id to use for the conversion")
-  .option("-w, --webp", "Convert jpg, jpeg, png, and gif image extensions to webp")
+  .option(
+    "-w, --webp",
+    "Convert jpg, jpeg, png, and gif image extensions to webp",
+  )
   .parse(process.argv);
 
 const options = program.opts() as ConversionOptions;

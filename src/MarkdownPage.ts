@@ -92,7 +92,10 @@ function getBody(file: string, options?: ConversionOptions): string {
   return "";
 }
 
-function fromPmWikiFile(file: string, options?: ConversionOptions): MarkdownPage {
+function fromPmWikiFile(
+  file: string,
+  options?: ConversionOptions,
+): MarkdownPage {
   const frontMatter = getFrontMatter(file);
   const body = getBody(file, options);
 

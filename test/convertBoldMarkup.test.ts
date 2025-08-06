@@ -9,8 +9,10 @@ describe("convertBoldMarkup", () => {
   });
 
   it("should convert PMWiki bold markup with links", () => {
-    const wikitext = "[+[AP #145: Hellknight Hill](https://paizo.com/products/btq01znq) (Level 1) by Amanda Hamon+]";
-    const expectedMarkdown = "**[AP #145: Hellknight Hill](https://paizo.com/products/btq01znq) (Level 1) by Amanda Hamon**";
+    const wikitext =
+      "[+[AP #145: Hellknight Hill](https://paizo.com/products/btq01znq) (Level 1) by Amanda Hamon+]";
+    const expectedMarkdown =
+      "**[AP #145: Hellknight Hill](https://paizo.com/products/btq01znq) (Level 1) by Amanda Hamon**";
     expect(convertBoldMarkup(wikitext)).toBe(expectedMarkdown);
   });
 
@@ -22,7 +24,8 @@ describe("convertBoldMarkup", () => {
 
   it("should handle bold markup spanning multiple lines", () => {
     const wikitext = "[+This is a long bold text\nthat spans multiple lines+]";
-    const expectedMarkdown = "**This is a long bold text\nthat spans multiple lines**";
+    const expectedMarkdown =
+      "**This is a long bold text\nthat spans multiple lines**";
     expect(convertBoldMarkup(wikitext)).toBe(expectedMarkdown);
   });
 

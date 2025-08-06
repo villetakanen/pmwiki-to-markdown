@@ -15,14 +15,18 @@ describe("convertBlockquotes", () => {
   });
 
   it("should only convert lines that start with ->", () => {
-    const wikitext = "->This is a blockquote\nThis is regular text\n->Another blockquote";
-    const expectedMarkdown = "> This is a blockquote\nThis is regular text\n> Another blockquote";
+    const wikitext =
+      "->This is a blockquote\nThis is regular text\n->Another blockquote";
+    const expectedMarkdown =
+      "> This is a blockquote\nThis is regular text\n> Another blockquote";
     expect(convertBlockquotes(wikitext)).toBe(expectedMarkdown);
   });
 
   it("should handle blockquotes with complex content", () => {
-    const wikitext = "->Attach:4stars.png Kampanja lähtee kunnolla käyntiin ja sirkusmiljööstä otetaan kaikki irti. -@NiTessine";
-    const expectedMarkdown = "> Attach:4stars.png Kampanja lähtee kunnolla käyntiin ja sirkusmiljööstä otetaan kaikki irti. -@NiTessine";
+    const wikitext =
+      "->Attach:4stars.png Kampanja lähtee kunnolla käyntiin ja sirkusmiljööstä otetaan kaikki irti. -@NiTessine";
+    const expectedMarkdown =
+      "> Attach:4stars.png Kampanja lähtee kunnolla käyntiin ja sirkusmiljööstä otetaan kaikki irti. -@NiTessine";
     expect(convertBlockquotes(wikitext)).toBe(expectedMarkdown);
   });
 
@@ -32,8 +36,10 @@ describe("convertBlockquotes", () => {
   });
 
   it("should not convert -> in the middle of lines", () => {
-    const wikitext = "Some text -> this is not a blockquote\n->This is a blockquote";
-    const expectedMarkdown = "Some text -> this is not a blockquote\n> This is a blockquote";
+    const wikitext =
+      "Some text -> this is not a blockquote\n->This is a blockquote";
+    const expectedMarkdown =
+      "Some text -> this is not a blockquote\n> This is a blockquote";
     expect(convertBlockquotes(wikitext)).toBe(expectedMarkdown);
   });
 });

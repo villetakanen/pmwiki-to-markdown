@@ -37,7 +37,7 @@ function convertToWebp(imageUrl: string, options?: ConversionOptions): string {
   }
 
   // Convert jpg, jpeg, png, gif to webp (case insensitive)
-  return imageUrl.replace(/\.(jpe?g|png|gif)$/gi, '.webp');
+  return imageUrl.replace(/\.(jpe?g|png|gif)$/gi, ".webp");
 }
 
 /**
@@ -52,7 +52,10 @@ function convertToWebp(imageUrl: string, options?: ConversionOptions): string {
  * @param options - Conversion options including webp flag
  * @returns
  */
-export function convertImageLinks(wikitext: string, options?: ConversionOptions) {
+export function convertImageLinks(
+  wikitext: string,
+  options?: ConversionOptions,
+) {
   const extensionsPattern = extensions.join("|");
   const regex = new RegExp(
     `\\bhttp:\\/\\/\\S+\\.(${extensionsPattern})\\b`,
@@ -67,7 +70,10 @@ export function convertImageLinks(wikitext: string, options?: ConversionOptions)
 
   // Convert Attach: image links
   if (options?.webp) {
-    result = result.replace(/Attach:([^.\s]+)\.(jpe?g|png|gif)/gi, 'Attach:$1.webp');
+    result = result.replace(
+      /Attach:([^.\s]+)\.(jpe?g|png|gif)/gi,
+      "Attach:$1.webp",
+    );
   }
 
   return result;
