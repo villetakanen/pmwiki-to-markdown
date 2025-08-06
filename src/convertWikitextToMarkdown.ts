@@ -114,7 +114,23 @@ function convertWikiLinks(text: string): string {
  * Note: We need to be careful not to break markdown table separator rows (|---|---|---|)
  */
 export function convertHorizontalRules(text: string): string {
-  return text.replace(/----/g, "---").replace(/^---$/gm, "\n\n---\n\n"); // Only convert standalone --- lines on their own
+  // First convert ---- to ---
+  let result = text.replace(/----/g, "---");
+  
+  // Then handle standalone --- lines, being careful about existing newlines
+  result = result.replace(/(\n?)^(---)$(\n?)/gm, (match, beforeNewline, rule, afterNewline) => {
+    // Ensure we have newlines before and after, but don't duplicate them
+    const newlineBefore = beforeNewline || '\n\n';
+    const newlineAfter = afterNewline || '\n\n';
+    
+    // If we already have newlines, don't add duplicates
+    const finalBefore = newlineBefore === '\n' ? '\n\n' : newlineBefore;
+    const finalAfter = newlineAfter === '\n' ? '\n\n' : newlineAfter;
+    
+    return `${finalBefore}${rule}${finalAfter}`;
+  });
+  
+  return result;
 }
 
 /**
@@ -133,7 +149,10 @@ function parseInlineBold(remainingText: string, inside = false): string {
         remainingText.slice(boldTokenIndex + 3),
         true,
       );
-      return `${before.trim()} __${after.trim()}`;
+      // Only trim spaces, not newlines to preserve line structure
+      const beforeTrimmed = before.replace(/[ \t]+$/, '');
+      const afterTrimmed = after.replace(/^[ \t]+/, '').replace(/[ \t]+$/, '');
+      return `${beforeTrimmed} __${afterTrimmed}`;
     }
     // the remaining text does not contain any bold tokens, so we can just return the text
     return remainingText;
@@ -142,7 +161,10 @@ function parseInlineBold(remainingText: string, inside = false): string {
     // We are inside a bold block, so we want to return the text starting with '__ '
     const before = remainingText.slice(0, boldTokenIndex);
     const after = parseInlineBold(remainingText.slice(boldTokenIndex + 3));
-    return `${before.trim()}__ ${after?.trim()}`;
+    // Only trim spaces, not newlines to preserve line structure
+    const beforeTrimmed = before.replace(/[ \t]+$/, '');
+    const afterTrimmed = after?.replace(/^[ \t]+/, '') || '';
+    return `${beforeTrimmed}__ ${afterTrimmed}`;
   }
   return remainingText;
 }
@@ -158,7 +180,10 @@ function parseInlineItalic(remainingText: string, inside = false): string {
         remainingText.slice(italicTokenIndex + 2),
         true,
       );
-      return `${before.trim()} _${after.trim()}`;
+      // Only trim spaces, not newlines to preserve line structure
+      const beforeTrimmed = before.replace(/[ \t]+$/, '');
+      const afterTrimmed = after.replace(/^[ \t]+/, '').replace(/[ \t]+$/, '');
+      return `${beforeTrimmed} _${afterTrimmed}`;
     }
     // the remaining text does not contain any italic tokens, so we can just return the text
     return remainingText;
@@ -167,7 +192,10 @@ function parseInlineItalic(remainingText: string, inside = false): string {
     // We are inside a italic block, so we want to return the text starting with '_ '
     const before = remainingText.slice(0, italicTokenIndex);
     const after = parseInlineItalic(remainingText.slice(italicTokenIndex + 2));
-    return `${before.trim()}_ ${after?.trim()}`;
+    // Only trim spaces, not newlines to preserve line structure
+    const beforeTrimmed = before.replace(/[ \t]+$/, '');
+    const afterTrimmed = after?.replace(/^[ \t]+/, '') || '';
+    return `${beforeTrimmed}_ ${afterTrimmed}`;
   }
   return remainingText;
 }

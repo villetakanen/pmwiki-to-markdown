@@ -3,6 +3,13 @@ Use pnpm explicitly to run commands.
 
 Testing the conversion logic should be done by using the scripts in package.json, if possible.
 
+Example:
+```bash
+echo q | pnpm test test/debug-horizontal-rules.test.ts
+```
+
+Note: we are passing `echo q` to avoid interactive prompts during the test run.
+
 Manual testing utilities must be placed in the `test/manual` directory.
 </environment>
 
