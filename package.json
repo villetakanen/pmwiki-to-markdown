@@ -1,6 +1,6 @@
 {
   "name": "pmwiki-to-markdown",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "build": "tsc && vite build",
     "start": "node dist/index.js",

@@ -31,4 +31,12 @@ describe("convertInlineStyles", () => {
     const expectedMarkdown = "This is __bold__ and _italic_";
     expect(convertInlineStyles(wikitext)).toBe(expectedMarkdown);
   });
+
+  it("Should handle long consecutive styles", () => {
+    const wikitext =
+      "'''Str''' 8, '''Dex''' 20, '''Con''' 22, '''Int''' 12, '''Wis''' 12, '''Cha''' 8  ";
+    const expectedMarkdown =
+      "__Str__ 8, __Dex__ 20, __Con__ 22, __Int__ 12, __Wis__ 12, __Cha__ 8";
+    expect(convertInlineStyles(wikitext)).toBe(expectedMarkdown);
+  });
 });

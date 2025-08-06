@@ -17,7 +17,9 @@ function parseInlineBold(remainingText: string, inside = false): string {
       // Only trim spaces, not newlines to preserve line structure
       const beforeTrimmed = before.replace(/[ \t]+$/, "");
       const afterTrimmed = after.replace(/^[ \t]+/, "").replace(/[ \t]+$/, "");
-      return `${beforeTrimmed} __${afterTrimmed}`;
+      // Only add a space before __ if there's preceding text
+      const spaceBefore = beforeTrimmed ? " " : "";
+      return `${beforeTrimmed}${spaceBefore}__${afterTrimmed}`;
     }
     // the remaining text does not contain any bold tokens, so we can just return the text
     return remainingText;
@@ -49,7 +51,9 @@ function parseInlineItalic(remainingText: string, inside = false): string {
       // Only trim spaces, not newlines to preserve line structure
       const beforeTrimmed = before.replace(/[ \t]+$/, "");
       const afterTrimmed = after.replace(/^[ \t]+/, "").replace(/[ \t]+$/, "");
-      return `${beforeTrimmed} _${afterTrimmed}`;
+      // Only add a space before _ if there's preceding text
+      const spaceBefore = beforeTrimmed ? " " : "";
+      return `${beforeTrimmed}${spaceBefore}_${afterTrimmed}`;
     }
     // the remaining text does not contain any italic tokens, so we can just return the text
     return remainingText;

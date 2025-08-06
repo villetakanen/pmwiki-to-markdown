@@ -2,7 +2,7 @@
  * Adds line breaks where two or more lines of text exist in the same markdown paragraph.
  * PMWiki often had content that should be formatted with line breaks but appears as
  * separate lines in the same paragraph in markdown.
- * 
+ *
  * This function identifies consecutive non-empty lines that are not:
  * - Headers (starting with #)
  * - Lists (starting with * or 1.)
@@ -10,37 +10,37 @@
  * - Horizontal rules (---)
  * - Code blocks
  * - Block quotes (starting with >)
- * 
+ *
  * And adds explicit <br> tags at the end of each line (except the last) to create proper
  * line breaks for better legibility.
  */
 export function addParagraphLineBreaks(text: string): string {
-  const lines = text.split('\n');
+  const lines = text.split("\n");
   const result: string[] = [];
-  
+
   for (let i = 0; i < lines.length; i++) {
     const currentLine = lines[i];
     const nextLine = lines[i + 1];
-    
+
     // Add the current line to result
     let lineToAdd = currentLine;
-    
+
     // Check if we should add a line break
     if (shouldAddLineBreak(currentLine, nextLine)) {
       // Replace trailing spaces or add <br> tag for explicit line break
-      if (currentLine.endsWith('  ')) {
+      if (currentLine.endsWith("  ")) {
         // Replace trailing spaces with <br> tag
-        lineToAdd = currentLine.replace(/\s{2,}$/, '<br>');
-      } else if (!currentLine.endsWith('<br>') && !currentLine.endsWith('\\')) {
+        lineToAdd = currentLine.replace(/\s{2,}$/, "<br>");
+      } else if (!currentLine.endsWith("<br>") && !currentLine.endsWith("\\")) {
         // Add <br> tag if no line break marker exists
         lineToAdd = `${currentLine}<br>`;
       }
     }
-    
+
     result.push(lineToAdd);
   }
-  
-  return result.join('\n');
+
+  return result.join("\n");
 }
 
 /**
@@ -63,7 +63,7 @@ function shouldAddLineBreak(currentLine: string, nextLine: string): boolean {
   }
 
   // Don't add line break if current line already ends with line break markers
-  if (currentLine.endsWith('\\') || currentLine.endsWith('<br>')) {
+  if (currentLine.endsWith("\\") || currentLine.endsWith("<br>")) {
     return false;
   }
 
