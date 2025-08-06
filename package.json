@@ -6,7 +6,7 @@
     "start": "node dist/index.js",
     "check": "biome check --write",
     "test": "vitest",
-    "test-run": "tsc && vite build && node dist/index.js -i test-materials -o test-results"
+    "test-run": "tsc && vite build && node dist/index.js -i test-materials -o test-results --webp"
   },
   "bin": {
     "pmwiki-to-markdown": "dist/index.js"

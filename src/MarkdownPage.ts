@@ -1,5 +1,10 @@
 import { convertWikitextToMarkdown } from "./convertWikitextToMarkdown";
 
+interface ConversionOptions {
+  webp?: boolean;
+  uid?: string;
+}
+
 export class MarkdownPage {
   name = "";
   site = "";
@@ -79,17 +84,17 @@ function getFrontMatter(file: string): FrontMatter {
  *
  * @param file
  */
-function getBody(file: string): string {
+function getBody(file: string, options?: ConversionOptions): string {
   const body = file.match(/text=(.*)/);
   if (body) {
-    return convertWikitextToMarkdown(body[1]);
+    return convertWikitextToMarkdown(body[1], options);
   }
   return "";
 }
 
-function fromPmWikiFile(file: string): MarkdownPage {
+function fromPmWikiFile(file: string, options?: ConversionOptions): MarkdownPage {
   const frontMatter = getFrontMatter(file);
-  const body = getBody(file);
+  const body = getBody(file, options);
 
   const page = new MarkdownPage();
 

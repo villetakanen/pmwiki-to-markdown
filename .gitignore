@@ -133,4 +133,4 @@ dist
 # Local testing materials
 test-materials/
 test-results/
-test-output/
+test-output*

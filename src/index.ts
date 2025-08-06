@@ -7,20 +7,29 @@ import { MarkdownPage } from "./MarkdownPage";
 // * This is a program to convert PmWiki binary files to Markdown files.      *
 // ****************************************************************************                                                                   *
 
+interface ConversionOptions {
+  input: string;
+  output?: string;
+  uid?: string;
+  webp?: boolean;
+}
+
 program
   .version(version)
   .description("Convert pmwiki binary file to Markdown")
   .requiredOption("-i, --input <file>", "Input pmwiki file or folder")
   .option("-o, --output <file>", "Output folder, default is current folder")
   .option("-u, --uid <uid>", "User id to use for the conversion")
+  .option("-w, --webp", "Convert jpg, jpeg, png, and gif image extensions to webp")
   .parse(process.argv);
 
-const options = program.opts();
+const options = program.opts() as ConversionOptions;
 
 // Function to convert pmwiki to Markdown
 function convertPmWikiToMarkdown(
   inputFilePath: string,
   outputFilePath: string,
+  options: ConversionOptions,
 ) {
   try {
     // lets check if input file is a file or a folder
@@ -30,11 +39,11 @@ function convertPmWikiToMarkdown(
       const files = fs.readdirSync(inputFilePath);
       for (const file of files) {
         const input = `${inputFilePath}/${file}`;
-        convertPmWikiFileToMarkdown(input, outputFilePath, options.uid);
+        convertPmWikiFileToMarkdown(input, outputFilePath, options);
       }
     } else {
       // its a file
-      convertPmWikiFileToMarkdown(inputFilePath, outputFilePath);
+      convertPmWikiFileToMarkdown(inputFilePath, outputFilePath, options);
     }
   } catch (err) {
     console.error("Error reading the file:", err);
@@ -63,13 +72,13 @@ function writeMarkdownFile(mdd: MarkdownPage, outputFilePath: string) {
 function convertPmWikiFileToMarkdown(
   inputFilePath: string,
   outputFilePath: string,
-  uid?: string,
+  options: ConversionOptions,
 ) {
   try {
     const data = fs.readFileSync(inputFilePath, "utf8");
-    const md = MarkdownPage.fromPmWikiFile(data);
-    if (uid) {
-      md.author = uid;
+    const md = MarkdownPage.fromPmWikiFile(data, options);
+    if (options.uid) {
+      md.author = options.uid;
     }
     writeMarkdownFile(md, outputFilePath);
   } catch (err) {
@@ -77,4 +86,4 @@ function convertPmWikiFileToMarkdown(
   }
 }
 
-convertPmWikiToMarkdown(options.input, options.output);
+convertPmWikiToMarkdown(options.input, options.output || ".", options);

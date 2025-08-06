@@ -2,6 +2,10 @@ import { cleanWikiMarkers } from "./cleanWikiMarkers";
 import { convertImageLinks } from "./convertImageLinks";
 import { stripWikiRules } from "./stripWikiRules";
 
+interface ConversionOptions {
+  webp?: boolean;
+}
+
 /**
  * In Wikitext, a style starts with >>[style]3c%3c, we need to strip this out.
  */
@@ -264,14 +268,14 @@ export function convertInlineStyles(text: string): string {
   return parseInlineItalic(bold);
 }
 
-export function convertWikitextToMarkdown(wikitext: string) {
+export function convertWikitextToMarkdown(wikitext: string, options?: ConversionOptions) {
   const stripped = stripWikiRules(wikitext);
   const lineBreaks = convertLineBreaks(stripped);
   const inlineStyles = convertInlineStyles(lineBreaks);
   const rulers = convertHorizontalRules(inlineStyles);
   const lists = convertLists(rulers);
   const headigns = convertHeadings(lists);
-  const images = convertImageLinks(headigns);
+  const images = convertImageLinks(headigns, options);
   const userTags = convertUserTags(images);
   const markers = cleanWikiMarkers(userTags);
   const wikiLinks = convertWikiLinks(markers);

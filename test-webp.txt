@@ -1,0 +1,5 @@
+name=TestSite.WebpTest
+time=1257271361
+author=testuser
+ctime=1257271361
+text=This is a test with images: Attach:image.png and Attach:photo.jpg and http://example.com/test.gif also Attach:logo.svg
